@@ -237,8 +237,9 @@ export async function getTimeline(limit = 50, cursor?: string): Promise<{ feed: 
 }
 
 export async function getFeed(feedUri: string, limit = 50, cursor?: string): Promise<{ feed: TimelineItem[]; cursor?: string }> {
-  const res = await agent.app.bsky.feed.getFeed({ feed: feedUri, limit, cursor });
-  return { feed: res.data.feed as TimelineItem[], cursor: res.data.cursor };
+  const api = getSession() ? agent : publicAgent;
+  const res = await api.app.bsky.feed.getFeed({ feed: feedUri, limit, cursor });
+  return { feed: (res.data.feed ?? []) as TimelineItem[], cursor: res.data.cursor };
 }
 
 export async function getMixedFeed(
@@ -554,4 +555,44 @@ export function parseAtUri(uri: string): { did: string; collection: string; rkey
   const parts = uri.slice(5).split('/');
   if (parts.length < 3) return null;
   return { did: parts[0], collection: parts[1], rkey: parts.slice(2).join('/') };
+}
+
+/** Fetch a single post thread (post + replies). Works unauthenticated. */
+export async function getPostThread(uri: string, depth = 6) {
+  const api = getSession() ? agent : publicAgent;
+  const res = await api.getPostThread({ uri, depth });
+  return res.data;
+}
+
+/** Fetch author feed (posts by a user). Works unauthenticated. */
+export async function getAuthorFeed(
+  actor: string,
+  limit = 30,
+  cursor?: string,
+  filter?: 'posts_with_replies' | 'posts_no_replies' | 'posts_with_media' | 'posts_and_author_threads'
+) {
+  const api = getSession() ? agent : publicAgent;
+  const res = await api.getAuthorFeed({ actor, limit, cursor, filter: filter ?? 'posts_no_replies' });
+  return { feed: (res.data.feed ?? []) as TimelineItem[], cursor: res.data.cursor };
+}
+
+/** Like a post. Requires auth. */
+export async function likePost(uri: string, cid: string) {
+  const session = getSession();
+  if (!session?.did) throw new Error('Not logged in');
+  const res = await agent.like(uri, cid);
+  return res;
+}
+
+/** Remove a like. Requires auth. */
+export async function removeLike(likeUri: string) {
+  await agent.deleteLike(likeUri);
+}
+
+/** Repost a post. Requires auth. */
+export async function repostPost(uri: string, cid: string) {
+  const session = getSession();
+  if (!session?.did) throw new Error('Not logged in');
+  const res = await agent.repost(uri, cid);
+  return res;
 }
