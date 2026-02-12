@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
+	import { withBase } from '$lib/path';
 	import { appStore } from '$lib/stores/app';
 	import * as bsky from '$lib/bsky';
 	import * as oauth from '$lib/oauth';
@@ -115,7 +116,7 @@
 				});
 			} else {
 				const scope = base ? `${base}/` : '/';
-				navigator.serviceWorker.register(`${base || '/'}sw.js`, { scope }).catch((e) =>
+				navigator.serviceWorker.register(withBase('/sw.js'), { scope }).catch((e) =>
 					console.error('SW register failed:', e)
 				);
 			}
@@ -135,7 +136,7 @@
 
 <svelte:head>
 	<title>VioletSky</title>
-	<link rel="icon" href={`${base || '/'}icon.svg`} />
+	<link rel="icon" href={withBase('/icon.svg')} />
 </svelte:head>
 
 <div class="app-shell">

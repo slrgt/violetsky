@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { withBase } from '$lib/path';
 	import type { TimelineItem, CardViewMode } from '$lib/types';
 	import { getPostMediaInfo, isPostNsfw } from '$lib/bsky';
 	import { resizedAvatarUrl } from '$lib/image-utils';
@@ -60,7 +61,7 @@
 
 	const handleClick = () => {
 		onSeen?.();
-		goto(`${base || '/'}post/${encodeURIComponent(post.uri)}/`);
+		goto(withBase(`/post/${encodeURIComponent(post.uri)}/`));
 	};
 
 	const timeAgo = (dateStr: string) => {
@@ -89,7 +90,7 @@
 >
 	<div class="post-meta">
 		<a
-			href={`${base || '/'}profile/${encodeURIComponent(post.author.handle)}/`}
+			href={withBase(`/profile/${encodeURIComponent(post.author.handle)}/`)}
 			class="post-author"
 			onclick={(e) => e.stopPropagation()}
 		>
