@@ -1,8 +1,8 @@
 {
-  "client_id": "https://slrgt.github.io/purplesky-1/client-metadata.json",
-  "client_name": "PurpleSky",
-  "client_uri": "https://slrgt.github.io/purplesky-1/",
-  "redirect_uris": ["https://slrgt.github.io/purplesky-1/"],
+  "client_id": "https://slrgt.github.io/violetsky/client-metadata.json",
+  "client_name": "VioletSky",
+  "client_uri": "https://slrgt.github.io/violetsky/",
+  "redirect_uris": ["https://slrgt.github.io/violetsky/"],
   "scope": "atproto transition:generic rpc:app.bsky.feed.getFeed?aud=did:web:api.bsky.app%23bsky_appview",
   "grant_types": ["authorization_code", "refresh_token"],
   "response_types": ["code"],
